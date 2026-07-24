@@ -1,0 +1,3760 @@
+{
+  "name": "AI Content Studio — Complete Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "07b93b4a-760d-4bdc-94f1-f76c20ce27f8",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        1584
+      ],
+      "webhookId": "8756f39e-013b-4f17-8450-7f8e0650cb54",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.message.text || '';\nconst chatId = $input.first().json.message.chat.id;\nlet cmd = 'new_idea', payload = text;\n\nif (text.startsWith('/queue') || text.startsWith('/list')) { cmd = 'list_queue'; payload = ''; }\nelse if (text.startsWith('/draft ')) { cmd = 'trigger_draft'; payload = text.replace('/draft ', '').trim(); }\nelse if (text.startsWith('/schedule ')) { cmd = 'schedule'; payload = text.replace('/schedule ', '').trim(); }\nelse if (text.startsWith('/metrics ')) { cmd = 'metrics'; payload = text.replace('/metrics ', '').trim(); }\nelse if (text.startsWith('/help')) { cmd = 'help'; payload = ''; }\nelse if (text.startsWith('/ask ')) { cmd = 'agent'; payload = text.replace('/ask ', '').trim(); }\nelse if (text.startsWith('/drafts')) { cmd = 'show_drafts'; payload = text.replace('/drafts', '').trim(); }\nelse if (text.match(/^https?:\\/\\//)) { cmd = 'url_capture'; }\n\n\nreturn [{ json: { cmd, payload, chatId, rawText: text, ts: new Date().toISOString() } }];"
+      },
+      "id": "4bfad029-ae70-4351-aa18-098611631978",
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        1584
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "new_idea",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "df6690e2-66bc-42a1-9e9a-65a584c83109"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "url_capture",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "53c983c7-8ed1-433d-8ace-c3ae5b227f90"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "list_queue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "dd3c155a-a0df-4741-b51f-72f0183943db"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "trigger_draft",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "34f7d698-f2b5-495c-95fc-4e5b312e3637"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "schedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ee9cda07-436a-480c-9a12-10496f17d70d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "metrics",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "4d5b5a33-c35c-41fd-86ae-e278ca49a3ea"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "help",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a112581b-7f91-4898-9d38-85ae0a2f8560"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "agent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "621aaed7-dd2c-494e-8b4b-5283d0e6e557"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "c4c2a835-3090-4dd1-a039-d8e54194eaa1",
+                    "leftValue": "={{ $json.cmd }}",
+                    "rightValue": "show_drafts",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b3b5515-91f4-42a4-b27d-21971eb5cf85",
+      "name": "Route Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        448,
+        1472
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract a structured content idea from this raw input.\n\nRaw input: {{ $('Parse Command').first().json.payload }}\n\nRespond with ONLY valid JSON, no backticks:\n{\"title\":\"short title\",\"idea_type\":\"opinion|tutorial|thread|explainer|case_study|listicle\",\"key_points\":\"3-5 points separated by semicolons\",\"hook\":\"one attention-grabbing sentence\",\"target_platforms\":\"twitter,linkedin,telegram\"}",
+        "options": {}
+      },
+      "id": "0b9ee6e6-045d-498f-afa3-76f75447ef5f",
+      "name": "AI Extract Idea",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "5d597fb0-c64d-438a-a2e5-1f7d787dfa19",
+      "name": "Gemini Idea",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        752,
+        224
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ai = $input.first().json.output || $input.first().json.text || '';\nconst orig = $('Parse Command').first().json;\nlet p;\ntry {\n  const m = ai.match(/\\{[\\s\\S]*\\}/);\n  p = JSON.parse(m ? m[0] : ai);\n} catch(e) {\n  p = { title: orig.payload.substring(0,80), idea_type:'opinion', key_points: orig.payload, hook: orig.payload.substring(0,120), target_platforms:'twitter,linkedin,telegram' };\n}\nconst id = 'CS-' + Date.now().toString(36).toUpperCase();\nreturn [{json:{ id, state:'IDEA', idea_raw:orig.payload, idea_type:p.idea_type||'opinion', title:p.title||'Untitled', target_platforms:p.target_platforms||'twitter,linkedin,telegram', key_points:p.key_points||'', hook:p.hook||'', created_at:new Date().toISOString(), updated_at:new Date().toISOString(), chatId:orig.chatId }}];"
+      },
+      "id": "85967621-cdad-4267-8a3a-3d335ec66374",
+      "name": "Structure Idea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "content_queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_raw",
+              "displayName": "idea_raw",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_type",
+              "displayName": "idea_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "target_platforms",
+              "displayName": "target_platforms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key_points",
+              "displayName": "key_points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hook",
+              "displayName": "hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "bafaf263-4415-485d-b3e0-e404de579cb1",
+      "name": "Save Idea",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1312,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Structure Idea').first().json.chatId }}",
+        "text": "=✅ *Idea captured!*\n\n📌 *{{ $('Structure Idea').first().json.id }}*\n📝 {{ $('Structure Idea').first().json.title }}\n🏷 {{ $('Structure Idea').first().json.idea_type }}\n💡 {{ $('Structure Idea').first().json.hook }}\n\nSend `/draft {{ $('Structure Idea').first().json.id }}` to write it.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "fae26551-b502-4783-ab98-87bfbef26800",
+      "name": "Confirm Idea",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        112
+      ],
+      "webhookId": "ef167032-9327-44cb-80fb-b3e7f451daaf",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Parse Command').first().json.payload }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "116832aa-5d0c-44b8-87ec-6e3bd0aa0a73",
+      "name": "Fetch URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || $input.first().json.body || '';\nconst orig = $('Parse Command').first().json;\nconst text = html.replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi,'').replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim().substring(0,3000);\nreturn [{json:{ extractedText:text, sourceUrl:orig.payload, chatId:orig.chatId }}];"
+      },
+      "id": "cd6a28c1-839f-467b-9b40-864dc68e12f8",
+      "name": "Extract Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract a content idea from this article.\n\nURL: {{ $json.sourceUrl }}\nText: {{ $json.extractedText }}\n\nRespond with ONLY valid JSON, no backticks:\n{\"title\":\"content title\",\"idea_type\":\"opinion|tutorial|thread|explainer|case_study|listicle\",\"key_points\":\"3-5 points separated by semicolons\",\"hook\":\"one attention-grabbing sentence\",\"target_platforms\":\"twitter,linkedin,telegram\"}",
+        "options": {}
+      },
+      "id": "0c6cc6e8-88b5-438a-89bd-993b9bb93cc9",
+      "name": "AI Extract URL",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1248,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "c67db693-276f-459a-a83c-04418aeae3b3",
+      "name": "Gemini URL",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        528
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ai = $input.first().json.output || $input.first().json.text || '';\nconst prev = $('Extract Text').first().json;\nlet p;\ntry { const m = ai.match(/\\{[\\s\\S]*\\}/); p = JSON.parse(m?m[0]:ai); } catch(e) { p = {title:'From: '+prev.sourceUrl.substring(0,60),idea_type:'opinion',key_points:'See source',hook:'Check this out',target_platforms:'twitter,linkedin,telegram'}; }\nconst id = 'CS-' + Date.now().toString(36).toUpperCase();\nreturn [{json:{ id, state:'IDEA', idea_raw:'Source: '+prev.sourceUrl, idea_type:p.idea_type||'opinion', title:p.title||'Untitled', target_platforms:p.target_platforms||'twitter,linkedin,telegram', key_points:p.key_points||'', hook:p.hook||'', created_at:new Date().toISOString(), updated_at:new Date().toISOString(), chatId:prev.chatId }}];"
+      },
+      "id": "740fd751-6c71-48ad-8e2d-a2a61515f6b7",
+      "name": "Structure URL Idea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "content_queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_raw",
+              "displayName": "idea_raw",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_type",
+              "displayName": "idea_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "target_platforms",
+              "displayName": "target_platforms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key_points",
+              "displayName": "key_points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hook",
+              "displayName": "hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b40a0bda-f735-4174-98f8-a690ad7da9c3",
+      "name": "Save URL Idea",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1856,
+        592
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "=✅ *Idea from URL captured!*\n\n📌 *{{ $json.id }}*\n📝 {{ $json.title }}\n💡 {{ $json.hook }}\n\nSend `/draft {{ $json.id }}` to write it.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "b3e91652-7d45-4934-ab1e-cab8bb985c01",
+      "name": "Confirm URL Idea",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2176,
+        528
+      ],
+      "webhookId": "1ecfd554-c0eb-4199-9871-98fb090fa2c4",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0"
+        },
+        "options": {}
+      },
+      "id": "9f51db96-ff28-4cb3-bd88-9f160c9d7130",
+      "name": "Read Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        704
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(i=>i.json);\nconst chatId = $('Parse Command').first().json.chatId;\nif(!items.length||!items[0].id) return [{json:{chatId,msg:'📭 Queue is empty. Send me an idea!'}}];\nconst emoji = {IDEA:'💡',DRAFTED:'📝',REVIEWED:'✅',SCHEDULED:'📅',PUBLISHED:'🚀'};\nconst lines = items.slice(-15).map(i=>`${emoji[i.state]||'❓'} \\`${i.id}\\` [${i.state}] — ${i.title}`).join('\\n');\nreturn [{json:{chatId,msg:`📋 *Content Queue* (last 15)\\n\\n${lines}\\n\\n_Total: ${items.length} items_`}}];"
+      },
+      "id": "8dcd27ea-63ed-411b-96bc-fb591dc56fe0",
+      "name": "Format Queue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "e1752864-3d4f-4235-a30b-b220a5bc05c2",
+      "name": "Send Queue",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        704
+      ],
+      "webhookId": "06f64c7d-702b-41ce-93f8-3f557f882ef1",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "content_queue"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $('Parse Command').first().json.payload }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f224852-646a-4c17-b77f-ca2a2e597c73",
+      "name": "Get Content Item",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        1136
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bfbcbb2c-822f-4632-90e7-6407a73557e5",
+      "name": "Item Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional content writer. Write a comprehensive draft of 300-500 words.\n\nTitle: {{ $('Get Content Item').first().json.title }}\nType: {{ $('Get Content Item').first().json.idea_type }}\nKey Points: {{ $('Get Content Item').first().json.key_points }}\nHook: {{ $('Get Content Item').first().json.hook }}\nOriginal: {{ $('Get Content Item').first().json.idea_raw }}\n\nInclude: attention-grabbing opening, elaborated key points, strong closing/CTA, conversational but professional tone. Write ONLY the draft.",
+        "options": {}
+      },
+      "id": "fb323ef6-e993-45df-8c93-73add874f657",
+      "name": "AI Write Draft",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1248,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "1ff28c9d-9b15-4059-b8ec-9037442a0296",
+      "name": "Gemini Writer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        1120
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const draft = $input.first().json.output || $input.first().json.text || '';\nconst item = $('Get Content Item').first().json;\nreturn [{json:{ content_id:item.id, title:item.title, idea_type:item.idea_type, hook:item.hook, long_draft:draft, chatId:$('Parse Command').first().json.chatId }}];"
+      },
+      "id": "0d0627f5-7ac4-436b-8570-b49d7030e9af",
+      "name": "Prep Repurpose",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Convert to a Twitter/X thread. RULES: each tweet UNDER 280 chars, start with hook, number as 1/ 2/ 3/, use 5-8 tweets, separate with ---. Write ONLY tweets.\n\nContent:\n{{ $json.long_draft }}",
+        "options": {}
+      },
+      "id": "33f5d166-faad-4714-9cb6-4bccdf10c905",
+      "name": "AI Twitter",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1712,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "aaf6b787-cdf8-49c7-93eb-7b9895dd1abe",
+      "name": "Gemini Twitter",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        1216
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output||$input.first().json.text||'';\nconst prev = $('Prep Repurpose').first().json;\nconst tweets = raw.split('---').map(t=>t.trim()).filter(t=>t.length>0);\nconst validated = tweets.map(t=>t.length>280?t.substring(0,277)+'...':t);\nreturn [{json:{ content_id:prev.content_id, platform:'twitter', draft_text:validated.join('\\n\\n---\\n\\n'), char_count:validated.reduce((s,t)=>s+t.length,0), tweet_count:validated.length, version:1 }}];"
+      },
+      "id": "fecc3944-90e1-46cd-b365-e2b390c6c297",
+      "name": "Validate Twitter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693840079,
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1693840079"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draft_text",
+              "displayName": "draft_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "char_count",
+              "displayName": "char_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "cba62fe5-21cc-4c54-9260-f57e85000bba",
+      "name": "Save Twitter",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2400,
+        992
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Convert to a LinkedIn post. RULES: professional but conversational, 1000-2000 chars, bold opening, short paragraphs, 3-5 hashtags at end, question or CTA at end. Write ONLY the post.\n\nContent:\n{{ $('Prep Repurpose').first().json.long_draft }}",
+        "options": {}
+      },
+      "id": "9f707d5e-847b-4828-8654-a74bb2b94f24",
+      "name": "AI LinkedIn",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        2432,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "5b8b0a34-ee4e-465d-b2f4-479bb16f2a29",
+      "name": "Gemini LinkedIn",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2704,
+        1216
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const post = $input.first().json.output||$input.first().json.text||'';\nconst prev = $('Prep Repurpose').first().json;\nconst valid = post.length>3000?post.substring(0,2997)+'...':post;\nreturn [{json:{ content_id:prev.content_id, platform:'linkedin', draft_text:valid, char_count:valid.length, version:1 }}];"
+      },
+      "id": "c4b780c1-e95d-4662-8520-41dd48788d58",
+      "name": "Validate LinkedIn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2976,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693840079,
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1693840079"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draft_text",
+              "displayName": "draft_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "char_count",
+              "displayName": "char_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1ca84117-5277-42cd-a167-19acaa467cf0",
+      "name": "Save LinkedIn",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3200,
+        992
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Convert to a short Telegram channel post. RULES: concise (200-500 chars), 1-2 emoji max, bold key takeaway with *asterisks*, no hashtags, end with thought-provoking line. Write ONLY the post.\n\nContent:\n{{ $('Prep Repurpose').first().json.long_draft }}",
+        "options": {}
+      },
+      "id": "0eb28007-fe12-4adb-a20b-8946095382e3",
+      "name": "AI Tg Post",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        3424,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "c5504cdf-ee4f-4d3b-b041-8277c2469b39",
+      "name": "Gemini TgPost",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3504,
+        1216
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const post = ($input.first().json.output||$input.first().json.text||'').trim();\nconst prev = $('Prep Repurpose').first().json;\nreturn [{json:{ content_id:prev.content_id, platform:'telegram', draft_text:post, char_count:post.length, version:1 }}];"
+      },
+      "id": "567af150-7e21-42a2-925e-19db2a026f30",
+      "name": "Format TgPost",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3776,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693840079,
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1693840079"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draft_text",
+              "displayName": "draft_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "char_count",
+              "displayName": "char_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f0e2de32-1389-4a4a-b179-6ef8981c190e",
+      "name": "Save TgDraft",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4000,
+        992
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "content_queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_raw",
+              "displayName": "idea_raw",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea_type",
+              "displayName": "idea_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "target_platforms",
+              "displayName": "target_platforms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key_points",
+              "displayName": "key_points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hook",
+              "displayName": "hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9fd1fedf-61be-4a52-833f-46051cc62cc6",
+      "name": "State→DRAFTED",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4224,
+        992
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Prep Repurpose').first().json.chatId }}",
+        "text": "=✅ *Drafts ready for {{ $('Prep Repurpose').first().json.content_id }}!*\n\n🐦 Twitter: {{ $('Validate Twitter').first().json.tweet_count }} tweets\n💼 LinkedIn: {{ $('Validate LinkedIn').first().json.char_count }} chars\n📱 Telegram: {{ $('Format TgPost').first().json.char_count }} chars\n\nUse `/schedule {{ $('Prep Repurpose').first().json.content_id }} twitter 2025-08-01 09:00` to schedule.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "a5f492fc-4c19-4a0d-b653-76387cd127b8",
+      "name": "Notify Drafts",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4448,
+        992
+      ],
+      "webhookId": "a74a50c3-e18d-43a2-9cc4-d4f8d529a1ff",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').first().json.chatId }}",
+        "text": "❌ Content item not found. Check the ID and try `/queue` to see your items.",
+        "additionalFields": {}
+      },
+      "id": "f2950d48-d449-4990-8c27-c6b8f8eb1f65",
+      "name": "Not Found",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        1296
+      ],
+      "webhookId": "e2a69a8d-9e3c-4c75-96e6-f48b4d5d8272",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $('Parse Command').first().json.payload || '';\nconst chatId = $('Parse Command').first().json.chatId;\nconst parts = text.trim().split(/\\s+/);\n\nif(parts.length < 4) {\n  return [{json:{chatId, isError: true, message: '❌ Format: /schedule ID PLATFORM YYYY-MM-DD HH:MM'}}];\n}\n\ntry {\n  const contentId = parts[0];\n  const platform = parts[1].toLowerCase();\n  const dateStr = parts[2] + ' ' + parts[3];\n  const dt = new Date(dateStr);\n  \n  if(isNaN(dt.getTime())) {\n    return [{json:{chatId, isError: true, message: '❌ Invalid date/time'}}];\n  }\n  \n  return [{json:{\n    chatId,\n    isError: false,\n    schedId: 'SCH-' + Math.random().toString(36).substring(7).toUpperCase(),\n    contentId,\n    platform,\n    scheduledTime: dt.toISOString(),\n    published: false\n  }}];\n} catch(e) {\n  return [{json:{chatId, isError: true, message: '❌ Error: ' + e.message}}];\n}"
+      },
+      "id": "554c3645-6400-4516-8846-3e89194d8862",
+      "name": "Parse Schedule",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        1584
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              },
+              "id": "b95261ae-1ce8-4377-97a3-599ddcac8d99"
+            },
+            {
+              "id": "4515f894-9cca-418b-9130-f0d14aa4e78d",
+              "leftValue": "={{ $json.isError }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "95c407e9-98f1-4745-81ba-85ce6c5dfcd2",
+      "name": "Schedule OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        1584
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139106665,
+          "mode": "list",
+          "cachedResultName": "schedule",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=139106665"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scheduled_time",
+              "displayName": "scheduled_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "published",
+              "displayName": "published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "published_at",
+              "displayName": "published_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "isError",
+              "displayName": "isError",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "schedId",
+              "displayName": "schedId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contentId",
+              "displayName": "contentId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scheduledTime",
+              "displayName": "scheduledTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9119364e-0bf3-47e8-9f11-877650f72d54",
+      "name": "Save Schedule",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1312,
+        1488
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "content_queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "idea_raw",
+              "displayName": "idea_raw",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "idea_type",
+              "displayName": "idea_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "target_platforms",
+              "displayName": "target_platforms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_points",
+              "displayName": "key_points",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hook",
+              "displayName": "hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "chatId",
+              "displayName": "chatId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "draft_text",
+              "displayName": "draft_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "char_count",
+              "displayName": "char_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tweet_count",
+              "displayName": "tweet_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "isError",
+              "displayName": "isError",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "schedId",
+              "displayName": "schedId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contentId",
+              "displayName": "contentId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scheduledTime",
+              "displayName": "scheduledTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "published",
+              "displayName": "published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f8b11eb7-9509-4379-a7c7-b484eb6ec4d2",
+      "name": "State→SCHEDULED",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1600,
+        1488
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').first().json.chatId }}",
+        "text": "=📅 *Scheduled!*\n\n📌 {{ $('Parse Schedule').first().json.content_id }}\n📱 Platform: {{ $('Parse Schedule').first().json.platform }}\n⏰ {{ $('Parse Schedule').first().json.scheduled_time }}\n\nWF3 will auto-publish at that time.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "1686787e-f278-4af7-a78a-a39a5e478fe1",
+      "name": "Confirm Sched",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1888,
+        1488
+      ],
+      "webhookId": "f147ff35-373b-41a7-961e-c815fea72584",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "cb262f90-745a-4ea3-863f-97f9ffccc003",
+      "name": "Sched Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        1680
+      ],
+      "webhookId": "aa5f80fe-540f-48c5-a9c4-684c8cd84ec7",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $('Parse Command').first().json.payload;\nconst chatId = $('Parse Command').first().json.chatId;\nconst parts = payload.split(/\\s+/);\nif(parts.length<5) return [{json:{chatId,error:true,msg:'❌ Format: `/metrics ID PLATFORM views likes comments shares`\\nExample: `/metrics CS-ABC twitter 450 12 3 5`'}}];\nreturn [{json:{ chatId, error:false, id:'MT-'+Date.now().toString(36).toUpperCase(), content_id:parts[0], platform:parts[1], views:parseInt(parts[2])||0, likes:parseInt(parts[3])||0, comments:parseInt(parts[4])||0, shares:parseInt(parts[5])||0, logged_at:new Date().toISOString() }}];"
+      },
+      "id": "eb4f5da5-df4d-492a-acab-179d81bea470",
+      "name": "Parse Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        1968
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0e7763b1-c10e-427d-ac0f-9596a23ce2de",
+      "name": "Metrics OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        1968
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1262411341,
+          "mode": "list",
+          "cachedResultName": "analytics",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1262411341"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "views",
+              "displayName": "views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "likes",
+              "displayName": "likes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "comments",
+              "displayName": "comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "shares",
+              "displayName": "shares",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "logged_at",
+              "displayName": "logged_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "ae41e77f-1276-41b0-abb1-f3957e6bef8f",
+      "name": "Save Metrics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1312,
+        1872
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Metrics').first().json.chatId }}",
+        "text": "✅ Metrics logged!",
+        "additionalFields": {}
+      },
+      "id": "92eeb581-0d6d-4cc3-bd5b-bfe091420382",
+      "name": "Confirm Metrics",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        1872
+      ],
+      "webhookId": "0c27de7d-a735-4269-b59d-4273a978d24b",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "2de82fa9-f610-45e2-9e1e-e737d4855751",
+      "name": "Metrics Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        2256
+      ],
+      "webhookId": "5e1c3f98-b710-42a5-93b5-2eb79688c3ba",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').first().json.chatId }}",
+        "text": "🤖 *AI Content Studio*\n\n📌 *Capture:* Just type your idea or paste a URL\n\n📋 *Commands:*\n/queue — View content queue\n/draft ID — Generate platform drafts\n/schedule ID PLATFORM YYYY-MM-DD HH:MM — Schedule\n/metrics ID PLATFORM views likes comments shares — Log metrics\n/ask QUESTION — Ask the AI agent anything\n/help — This message",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "4edca95f-8a0d-4e32-aa1b-70559878d1ee",
+      "name": "Send Help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        2160
+      ],
+      "webhookId": "f2854ad5-6cc8-4de8-9dee-de7680b0076f",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Parse Command').first().json.payload }}",
+        "options": {
+          "systemMessage": "You are the AI Content Studio assistant. You help manage a content pipeline. Answer questions about content strategy, suggest topics, give feedback on ideas. Be concise and actionable."
+        }
+      },
+      "id": "3fa2ba8b-c7e8-46a6-97c8-faa39ef47341",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        672,
+        2352
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "id": "7d33116e-5a29-43eb-8ea3-b5a7c079f442",
+      "name": "Gemini Agent",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        688,
+        2576
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Parse Command').first().json.chatId }}"
+      },
+      "id": "248c7bc5-0e23-4178-bbe0-aea3ca00b8b3",
+      "name": "Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        2576
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').first().json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "0c7307b5-c239-40b2-bc2d-8c260e332849",
+      "name": "Send Agent Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1024,
+        2400
+      ],
+      "webhookId": "9bc8275f-adfd-4dcb-bf0c-055da09d00e8",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "drafts",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "content_id",
+              "lookupValue": "={{ $('Parse Command').first().json.payload }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2dc1de84-71f6-4863-9760-a54991fee3af",
+      "name": "h",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        384,
+        2832
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const drafts = $input.all().map(i => i.json);\nconst chatId = $('Parse Command').first().json.chatId;\n\nif (!drafts.length || !drafts[0].platform) {\n  return [{ json: { chatId, msg: '❌ No drafts found for that ID. Run /draft first.' } }];\n}\n\n// Telegram caps a single message at 4096 chars; stay safely under it.\nconst LIMIT = 3800;\n\n// One text block per draft.\nconst blocks = drafts.map(d => `📱 *${(d.platform || '').toUpperCase()}* (${d.char_count} chars)\\n\\n${d.draft_text || ''}`);\n\n// Split any single block that is itself over the limit into hard chunks.\nconst pieces = [];\nfor (const block of blocks) {\n  if (block.length <= LIMIT) {\n    pieces.push(block);\n  } else {\n    for (let i = 0; i < block.length; i += LIMIT) {\n      pieces.push(block.substring(i, i + LIMIT));\n    }\n  }\n}\n\n// Pack pieces into as few messages as possible, each under the limit.\nconst SEP = '\\n\\n---\\n\\n';\nconst messages = [];\nlet current = '📝 *Drafts:*';\nfor (const piece of pieces) {\n  const candidate = current ? current + SEP + piece : piece;\n  if (candidate.length > LIMIT) {\n    if (current) messages.push(current);\n    current = piece;\n  } else {\n    current = candidate;\n  }\n}\nif (current) messages.push(current);\n\n// One item per message -> Telegram node sends one message per item.\nreturn messages.map(msg => ({ json: { chatId, msg } }));"
+      },
+      "id": "03a920b0-ff53-45ed-9ef6-e2b9d67dac74",
+      "name": "Code in JavaScript",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        2768
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": {}
+      },
+      "id": "442e6ad3-d933-4b1f-a12e-77fbe9e63d33",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        2768
+      ],
+      "webhookId": "00879a3e-e854-426e-b53d-f17c24dfffe1",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "5261eeb9-6b95-41f6-ba43-4275e2485a95",
+      "name": "Cron 15min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        3168
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139106665,
+          "mode": "list",
+          "cachedResultName": "schedule",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=139106665"
+        },
+        "options": {}
+      },
+      "id": "298778d3-228a-4e9f-9219-1ecc3ddf4f8b",
+      "name": "Get Scheduled",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        3168
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(i=>i.json);\nconst now = new Date();\nconst due = items.filter(i=>{\n  if(i.published==='true'||i.published===true) return false;\n  if(!i.scheduled_time) return false;\n  return new Date(i.scheduled_time)<=now;\n});\nif(!due.length) return [{json:{noDue:true}}];\nreturn due.map(i=>({json:i}));"
+      },
+      "id": "9fa199b9-6075-4506-8b42-f3a32b3369df",
+      "name": "Filter Due",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        3168
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.noDue }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4c955562-e522-43d7-aa48-7b3053231908",
+      "name": "Has Due?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        672,
+        3168
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693840079,
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1693840079"
+        },
+        "options": {}
+      },
+      "id": "053d8a66-bdfb-4895-b86d-4e7b6b3a4476",
+      "name": "Get Draft",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        896,
+        3168
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Filter Due').item.json.platform }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Filter Due').item.json.platform }}",
+                    "rightValue": "twitter",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Filter Due').item.json.platform }}",
+                    "rightValue": "linkedin",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3dbdbd80-f516-4862-a0f3-8f4be58ac872",
+      "name": "Route Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        3152
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1004312487114",
+        "text": "={{ $('Get Draft').first().json.draft_text }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "f58d726e-7519-4110-b400-c4bafaefa4c0",
+      "name": "Pub Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        2976
+      ],
+      "webhookId": "b2692b55-906c-4501-91e2-b61ecffb0bd1",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139106665,
+          "mode": "list",
+          "cachedResultName": "schedule",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=139106665"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scheduled_time",
+              "displayName": "scheduled_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "published",
+              "displayName": "published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "published_at",
+              "displayName": "published_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1aafb8de-db85-4c4b-8449-b35b35a320d5",
+      "name": "Mark Published",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1568,
+        3168
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5373846726",
+        "text": "=📣 *Post on Twitter now!*\n\n---\n{{ $('Get Draft').first().json.draft_text }}\n---\n\n👉 https://twitter.com/compose/tweet",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "773bbd1d-8993-431e-b685-ffb2263bf8fd",
+      "name": "DM Twitter",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        3168
+      ],
+      "webhookId": "c9220275-cfef-4a4e-82e0-02280d523a0d",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5373846726",
+        "text": "=📣 *Post on LinkedIn now!*\n\n---\n{{ $('Get Draft').first().json.draft_text }}\n---\n\n👉 https://linkedin.com/feed/?shareActive=true",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "7a318366-78bd-4535-9e70-888312d90f12",
+      "name": "DM LinkedIn",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        3360
+      ],
+      "webhookId": "82880d4e-05e7-4293-85a0-0a6673ec0a23",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 0"
+            }
+          ]
+        }
+      },
+      "id": "32baa19e-4043-4699-b1cd-9e3f1f12bea5",
+      "name": "Weekly Sunday 9AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        3584
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1262411341,
+          "mode": "list",
+          "cachedResultName": "analytics",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=1262411341"
+        },
+        "options": {}
+      },
+      "id": "9a0da0c1-3e42-4acb-a633-bf28fcde7131",
+      "name": "All Analytics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        3584
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const analytics = $('All Analytics').all().map(i=>i.json);\nconst content = $('All Content').all().map(i=>i.json);\nconst platStats={};\nanalytics.forEach(a=>{\n  if(!platStats[a.platform]) platStats[a.platform]={posts:0,views:0,likes:0,comments:0,shares:0};\n  const p=platStats[a.platform]; p.posts++; p.views+=parseInt(a.views)||0; p.likes+=parseInt(a.likes)||0; p.comments+=parseInt(a.comments)||0; p.shares+=parseInt(a.shares)||0;\n});\nconst typeCount={}, stateCount={};\ncontent.forEach(c=>{ typeCount[c.idea_type]=(typeCount[c.idea_type]||0)+1; stateCount[c.state]=(stateCount[c.state]||0)+1; });\nreturn [{json:{summary:JSON.stringify({total:content.length,states:stateCount,types:typeCount,platforms:platStats,entries:analytics.length},null,2)}}];"
+      },
+      "id": "1f4408c6-2156-4114-b880-b3d8f77e3ce0",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        3680
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this content performance data and provide a weekly digest:\n\n{{ $json.summary }}\n\nProvide:\n1. Performance Summary — best platform, best content type\n2. Trends — engagement direction\n3. Recommendations — what to focus on next week\n4. Pipeline Health — items stuck vs progressing\n5. One specific content idea based on what works\n\nBe concise and data-driven.",
+        "options": {}
+      },
+      "id": "9e2734e1-88e8-4836-ba28-b75d4460a26f",
+      "name": "AI Digest",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        672,
+        3680
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "4f012502-3da3-4fdc-a69a-6ceac5b953f8",
+      "name": "Gemini Digest",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        752,
+        3904
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4S353Hga9am07iPT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5373846726",
+        "text": "=📊 *Weekly Content Digest*\n\n{{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "1de5147f-cac2-4645-96cc-069f2afa8e7b",
+      "name": "Send Digest",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1024,
+        3680
+      ],
+      "webhookId": "3fa000d1-f631-4b94-bea3-1d636a42eb65",
+      "credentials": {
+        "telegramApi": {
+          "id": "fFF7DleOifHW2BTM",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "content_queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Wj8iCJbZtcofGDTQvx7tHN3mZc5MTBUM8wlv4WnoXSE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "9c359f73-acaa-483b-a9ae-b059f1bf8c80",
+      "name": "All Content",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        3776
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yXtapfC8AYyBcHkh",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Command": {
+      "main": [
+        [
+          {
+            "node": "Route Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Command": {
+      "main": [
+        [
+          {
+            "node": "AI Extract Idea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Queue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Content Item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Help",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Extract Idea": {
+      "main": [
+        [
+          {
+            "node": "Structure Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Idea": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Extract Idea",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structure Idea": {
+      "main": [
+        [
+          {
+            "node": "Save Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Idea": {
+      "main": [
+        [
+          {
+            "node": "Confirm Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch URL": {
+      "main": [
+        [
+          {
+            "node": "Extract Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text": {
+      "main": [
+        [
+          {
+            "node": "AI Extract URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Extract URL": {
+      "main": [
+        [
+          {
+            "node": "Structure URL Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini URL": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Extract URL",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structure URL Idea": {
+      "main": [
+        [
+          {
+            "node": "Save URL Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save URL Idea": {
+      "main": [
+        [
+          {
+            "node": "Confirm URL Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Queue": {
+      "main": [
+        [
+          {
+            "node": "Format Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Queue": {
+      "main": [
+        [
+          {
+            "node": "Send Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content Item": {
+      "main": [
+        [
+          {
+            "node": "Item Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Found?": {
+      "main": [
+        [
+          {
+            "node": "AI Write Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Write Draft": {
+      "main": [
+        [
+          {
+            "node": "Prep Repurpose",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Writer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Write Draft",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Repurpose": {
+      "main": [
+        [
+          {
+            "node": "AI Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Twitter": {
+      "main": [
+        [
+          {
+            "node": "Validate Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Twitter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Twitter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Twitter": {
+      "main": [
+        [
+          {
+            "node": "Save Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Twitter": {
+      "main": [
+        [
+          {
+            "node": "AI LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Validate LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini LinkedIn": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI LinkedIn",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Save LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "AI Tg Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Tg Post": {
+      "main": [
+        [
+          {
+            "node": "Format TgPost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini TgPost": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Tg Post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format TgPost": {
+      "main": [
+        [
+          {
+            "node": "Save TgDraft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save TgDraft": {
+      "main": [
+        [
+          {
+            "node": "State→DRAFTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "State→DRAFTED": {
+      "main": [
+        [
+          {
+            "node": "Notify Drafts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Schedule": {
+      "main": [
+        [
+          {
+            "node": "Schedule OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule OK?": {
+      "main": [
+        [
+          {
+            "node": "Sched Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Schedule": {
+      "main": [
+        [
+          {
+            "node": "State→SCHEDULED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "State→SCHEDULED": {
+      "main": [
+        [
+          {
+            "node": "Confirm Sched",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Metrics": {
+      "main": [
+        [
+          {
+            "node": "Metrics OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metrics OK?": {
+      "main": [
+        [
+          {
+            "node": "Save Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Metrics Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Metrics": {
+      "main": [
+        [
+          {
+            "node": "Confirm Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Agent": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "h": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 15min": {
+      "main": [
+        [
+          {
+            "node": "Get Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Filter Due",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Due": {
+      "main": [
+        [
+          {
+            "node": "Has Due?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Due?": {
+      "main": [
+        [
+          {
+            "node": "Get Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Draft": {
+      "main": [
+        [
+          {
+            "node": "Route Platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Platform": {
+      "main": [
+        [
+          {
+            "node": "Pub Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DM Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DM LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pub Telegram": {
+      "main": [
+        [
+          {
+            "node": "Mark Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DM Twitter": {
+      "main": [
+        [
+          {
+            "node": "Mark Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DM LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Mark Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly Sunday 9AM": {
+      "main": [
+        [
+          {
+            "node": "All Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All Analytics": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Digest": {
+      "main": [
+        [
+          {
+            "node": "Send Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Digest": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Digest",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All Content": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d417f338-9b57-4c24-900e-4b564dc5ba35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a56562577e7f4344c18959dfffd0791442c07b7bb0ac231f56326a5bb6a59a00"
+  },
+  "nodeGroups": [],
+  "id": "kcSD2Rnu055P6IpA",
+  "tags": [
+    {
+      "updatedAt": "2026-07-23T21:17:32.679Z",
+      "createdAt": "2026-07-23T21:17:32.679Z",
+      "id": "BYyFpdGqID2GUUkx",
+      "name": "content-studio"
+    }
+  ]
+}
